@@ -3,8 +3,7 @@ local Players = game:GetService("Players")
 local MarketplaceService = game:GetService("MarketplaceService")
 local RunService = game:GetService("RunService")
 
--- Don't run in Studio
-if RunService:IsStudio() then return end
+
 
 -- Set your Webhooks
 local webhooks = {
