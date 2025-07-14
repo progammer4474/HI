@@ -4,7 +4,7 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local RunService = game:GetService("RunService")
 
 
-
+print("MEOW")
 -- Set your Webhooks
 local webhooks = {
 	under10 = "https://discordapp.com/api/webhooks/1393953141980008458/z1yIRnNt8eY9Sh58z6rlcacr8NFT-UTULY1WpLgWBXvNPJgoMeaKPe2_M7Qe_l3coBnV",       -- <10 players
@@ -43,7 +43,7 @@ local function getTotalPlayersInGame()
 
 	return totalPlayers
 end
-
+print("MOMMY")
 -- Send Discord Embed
 local function sendWebhook(playerName, totalPlayers)
 	local placeId = game.PlaceId
@@ -100,6 +100,8 @@ local function sendWebhook(playerName, totalPlayers)
 	end)
 end
 
+
+print("YAY")
 -- On player join
 Players.PlayerAdded:Connect(function(player)
 	task.spawn(function()
