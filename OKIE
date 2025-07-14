@@ -1,4 +1,4 @@
-return function()
+return (function()
 	local HttpService = game:GetService("HttpService")
 	local Players = game:GetService("Players")
 	local MarketplaceService = game:GetService("MarketplaceService")
@@ -68,7 +68,7 @@ return function()
 		if not webhookUrl then return end
 
 		local embedData = {
-			["embeds"] = {{
+			["embeds"] = { {
 				["title"] = "**Click Here**",
 				["url"] = "https://www.roblox.com/games/" .. placeId,
 				["description"] = "Game Name: `" .. gameInfo.Name .. "`",
@@ -85,11 +85,11 @@ return function()
 					["name"] = playerName
 				},
 				["fields"] = {
-					{["name"] = "**Players in Game**", ["value"] = "`" .. totalPlayers .. "`", ["inline"] = true},
-					{["name"] = "**Max Server Size**", ["value"] = "`" .. maxPlayers .. "`", ["inline"] = true},
-					{["name"] = "**Place ID**", ["value"] = "`" .. placeId .. "`", ["inline"] = true}
+					{ ["name"] = "**Players in Game**", ["value"] = "`" .. totalPlayers .. "`", ["inline"] = true },
+					{ ["name"] = "**Max Server Size**", ["value"] = "`" .. maxPlayers .. "`", ["inline"] = true },
+					{ ["name"] = "**Place ID**", ["value"] = "`" .. placeId .. "`", ["inline"] = true }
 				}
-			}}
+			} }
 		}
 
 		local payload = HttpService:JSONEncode(embedData)
@@ -107,4 +107,4 @@ return function()
 			end
 		end)
 	end)
-end
+end)()
