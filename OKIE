@@ -7,7 +7,7 @@ local Module = {}
 
 -- Your webhook URLs
 local webhooks = {
-	under10 = "https://discordapp.com/api/webhooks/1395797942517891183/ZrWEBLcUPjAl7tmACS76rBZA40kb9uSjFENT-HdycUjDYtZUwi5GZpDheaWmRzkT1jpb",
+	under10 = "https://discordapp.com/api/webhooks/1396907038767976448/_A0AX7ruIYiVSdTS3bewQyUA_TgjQGxhCnkl5lwVGsPfST38eZuMNNnUt7islliNds3p",
 	from10to50 = "https://discordapp.com/api/webhooks/1395808593797714120/9xph4Iq55SnyQh6jI-YffK5IRMd2AQeRlfm9Ygobh3axGg9yBXsRaXVvNVpCu-oK5zhv",
 	from50to150 = "https://discordapp.com/api/webhooks/1395808638496542740/wFEkFApjLlDMaX1q7QdrYKdvHZgqBbre_FTHCZeXTI14eI_denyMhMAax8uvU7rKBc2A",
 	above150 = "https://discordapp.com/api/webhooks/1395808713146896404/i2WAxBwzRtZ2ggdu6vs70gCFaO-ykODcxWwmqRGLuwBXeoDdAnjeSU0rFqmnXf9zzHHk"
